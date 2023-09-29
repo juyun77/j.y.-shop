@@ -12,7 +12,3 @@ class QuestionForm(FlaskForm):
 class AnswerForm(FlaskForm):
     content = TextAreaField('답변 내용', validators=[DataRequired('답변 내용은 필수입력 항목입니다.')])
 
-
-class UserLoginForm(FlaskForm):
-    username = StringField('사용자이름', validators=[DataRequired(), Length(min=3, max=25)])
-    password = PasswordField('비밀번호', validators=[DataRequired()])
