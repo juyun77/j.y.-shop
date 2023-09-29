@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template,request, url_for
+from flask import Blueprint, render_template,request, url_for ,g, flash
 from pybo.forms import QuestionForm
 from werkzeug.utils import redirect
 from pybo.models import Question
@@ -30,3 +30,25 @@ def create():
         db.session.commit()
         return redirect(url_for('main.index'))
     return render_template('question/question_form.html', form=form)
+
+
+
+@bp.route('/modify/<int:question_id>', methods=('GET', 'POST'))
+def modify(question_id):
+    question = Question.query.get_or_404(question_id)
+    if request.method == 'POST':  # POST 요청
+        form = QuestionForm()
+        if form.validate_on_submit():
+            form.populate_obj(question)
+            db.session.commit()
+            return redirect(url_for('question.detail', question_id=question_id))
+    else:  # GET 요청
+        form = QuestionForm(obj=question)
+    return render_template('question/question_form.html', form=form)
+
+@bp.route('/delete/<int:question_id>')
+def delete(question_id):
+    question = Question.query.get_or_404(question_id)
+    db.session.delete(question)
+    db.session.commit()
+    return redirect(url_for('question._list'))
