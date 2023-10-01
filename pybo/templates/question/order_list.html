@@ -50,7 +50,7 @@
                                 {% endif %}
                                 {% if order.status == "주문취소" %}
                                              <!-- 주문 내역 삭제 버튼 -->
-<form action="{{ url_for('order.delete_ordered_items', order_id=order.id) }}" method="post">
+<form action="{{ url_for('order.delete_order', order_id=order.id) }}" method="post">
     <button type="submit" class="btn btn-danger">주문 내역 삭제</button>
 </form>
 

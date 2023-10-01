@@ -97,15 +97,21 @@ def cancel_order(order_id):
     return redirect(url_for('order.order_list'))
 
 
-@bp.route('/delete_ordered_items/<int:order_id>', methods=['POST'])
-def delete_ordered_items(order_id):
+@bp.route('/delete_order/<int:order_id>', methods=['POST'])
+def delete_order(order_id):
     order = Order.query.get(order_id)
 
- 
-    db.session.delete(order)
+    if order:
+        # 주문된 항목을 먼저 삭제
+        for item in order.ordered_items:
+            db.session.delete(item)
         
-    db.session.commit()
-    flash('주문 내역이 삭제되었습니다.', 'success')
-
+        # 주문 삭제
+        db.session.delete(order)
+        db.session.commit()
+        flash('주문 정보가 삭제되었습니다.', 'success')
+    else:
+        flash('주문을 찾을 수 없습니다.', 'danger')
 
     return redirect(url_for('order.order_list'))
+
