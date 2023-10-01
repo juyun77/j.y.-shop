@@ -2,7 +2,9 @@ from flask import Flask, request, render_template, redirect, url_for
 from flask import Blueprint
 from ..models import Question,CartItem,db
 
-bp = Blueprint('order', __name__, url_prefix='/')
+bp = Blueprint('order', __name__, url_prefix='/order')
+
+
 
 # 장바구니 페이지
 @bp.route('/cart')
@@ -23,7 +25,7 @@ def update_quantity(cart_item_id):
         cart_item.quantity = new_quantity
         db.session.commit()
 
-    return redirect('/cart')
+    return redirect('/order/cart')
 
 # 장바구니에서 항목 삭제
 @bp.route('/remove_item/<int:cart_item_id>', methods=['POST'])
@@ -31,4 +33,5 @@ def remove_item(cart_item_id):
     cart_item = CartItem.query.get(cart_item_id)
     db.session.delete(cart_item)
     db.session.commit()
-    return redirect('/cart')
+   
+    return redirect('/order/cart')

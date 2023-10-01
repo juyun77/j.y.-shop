@@ -177,12 +177,6 @@ abbr[title] {
   -webkit-text-decoration-skip-ink: none;
           text-decoration-skip-ink: none;
 }
-/* CSS 파일 (예: styles.css) */
-.hover-effect:hover {
-  /* hover 효과를 원하는 스타일로 변경합니다. */
-  overflow: auto;
-}
-
 
 
 address {

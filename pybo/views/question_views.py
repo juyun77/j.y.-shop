@@ -13,7 +13,8 @@ bp = Blueprint('question', __name__, url_prefix='/question')
 @bp.route('/list/')
 def _list():
     question_list = Question.query.order_by(Question.create_date.desc())
-    return render_template('question/question_list.html', question_list=question_list)
+    cart_items = CartItem.query.all()
+    return render_template('question/question_list.html', question_list=question_list, cart_items=cart_items)
 
 
 @bp.route('/detail/<int:question_id>/')
@@ -59,6 +60,7 @@ def add_to_cart():
     question_id = int(request.form.get('question_id'))
     price = float(request.form.get('price'))
     quantity = int(request.form.get('quantity'))
+   
 
     # 선택한 음료 정보를 가져옵니다. 이 예시에서는 Question 모델을 사용합니다.
     question = Question.query.get(question_id)
@@ -68,7 +70,8 @@ def add_to_cart():
         cart_item = CartItem(question_id=question_id, price=price, quantity=quantity,question=question)
         db.session.add(cart_item)
         db.session.commit()
+        
     
       
 
-    return redirect('/cart')
+    return redirect('/order/cart')
