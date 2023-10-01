@@ -17,6 +17,7 @@
                     <th>총 가격</th>
                     <th>상태</th>
                     <th>주문상세</th>
+                    <th>주문완료</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,6 +34,31 @@
                                 </button>
                             </div>
                         </td>
+                        
+                            <td>
+                                {% if order.status != "주문완료" %}
+                                    <form action="{{ url_for('order.update_order_status', order_id=order.id) }}" method="post">
+                                        <button type="submit" class="btn btn-success">주문완료</button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if order.status == "대기 중" %}
+                                    <form action="{{ url_for('order.cancel_order', order_id=order.id) }}" method="post">
+                                        <button type="submit" class="btn btn-danger">주문취소</button>
+                                    </form>
+                                {% endif %}
+                                {% if order.status == "주문취소" %}
+                                             <!-- 주문 내역 삭제 버튼 -->
+<form action="{{ url_for('order.delete_ordered_items', order_id=order.id) }}" method="post">
+    <button type="submit" class="btn btn-danger">주문 내역 삭제</button>
+</form>
+
+                                    
+                                {% endif %}
+                            </td>
+                            
+                       
                     </tr>
                     <!-- 주문한 음료 목록 (드롭다운) -->
                     <tr>
@@ -46,6 +72,8 @@
                         </td>
                     </tr>
                 {% endfor %}
+
+ 
             </tbody>
         </table>
     </div>

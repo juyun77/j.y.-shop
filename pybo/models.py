@@ -34,7 +34,6 @@ class OrderedItem(db.Model):
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
-    
     order = db.relationship('Order', backref='ordered_items')
     question = db.relationship('Question', backref='ordered_items')
     

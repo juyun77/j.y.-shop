@@ -70,3 +70,42 @@ def order_list():
     orders = Order.query.all()
    
     return render_template('question/order_list.html', orders=orders)
+
+@bp.route('/update_order_status/<int:order_id>', methods=['POST'])
+def update_order_status(order_id):
+    order = Order.query.get(order_id)
+    if order:
+        order.status = "주문완료"
+        db.session.commit()
+        flash('주문 상태가 업데이트되었습니다.', 'success')
+    else:
+        flash('주문을 찾을 수 없습니다.', 'danger')
+    
+    return redirect(url_for('order.order_list'))
+
+
+@bp.route('/cancel_order/<int:order_id>', methods=['POST'])
+def cancel_order(order_id):
+    order = Order.query.get(order_id)
+    if order:
+        order.status = "주문취소"
+        db.session.commit()
+        flash('주문이 취소되었습니다.', 'danger')
+    else:
+        flash('주문을 찾을 수 없습니다.', 'danger')
+    
+    return redirect(url_for('order.order_list'))
+
+
+@bp.route('/delete_ordered_items/<int:order_id>', methods=['POST'])
+def delete_ordered_items(order_id):
+    order = Order.query.get(order_id)
+
+ 
+    db.session.delete(order)
+        
+    db.session.commit()
+    flash('주문 내역이 삭제되었습니다.', 'success')
+
+
+    return redirect(url_for('order.order_list'))
