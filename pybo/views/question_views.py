@@ -4,7 +4,7 @@ from werkzeug.utils import redirect
 from pybo.models import Question
 from datetime import datetime
 from .. import db
-from ..models import Question
+from ..models import Question,CartItem
 from ..forms import QuestionForm
 
 bp = Blueprint('question', __name__, url_prefix='/question')
@@ -52,3 +52,23 @@ def delete(question_id):
     db.session.delete(question)
     db.session.commit()
     return redirect(url_for('question._list'))
+
+
+@bp.route('/add_to_cart', methods=['POST'])
+def add_to_cart():
+    question_id = int(request.form.get('question_id'))
+    price = float(request.form.get('price'))
+    quantity = int(request.form.get('quantity'))
+
+    # 선택한 음료 정보를 가져옵니다. 이 예시에서는 Question 모델을 사용합니다.
+    question = Question.query.get(question_id)
+
+    if question and quantity >= 1:
+        # 장바구니에 음료를 추가합니다. 이 예시에서는 CartItem 모델을 사용합니다.
+        cart_item = CartItem(question_id=question_id, price=price, quantity=quantity,question=question)
+        db.session.add(cart_item)
+        db.session.commit()
+    
+      
+
+    return redirect('/cart')

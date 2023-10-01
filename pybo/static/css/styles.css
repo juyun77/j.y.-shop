@@ -10,6 +10,8 @@
  * Copyright 2011-2022 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
+
+ 
 :root {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
@@ -175,6 +177,13 @@ abbr[title] {
   -webkit-text-decoration-skip-ink: none;
           text-decoration-skip-ink: none;
 }
+/* CSS 파일 (예: styles.css) */
+.hover-effect:hover {
+  /* hover 효과를 원하는 스타일로 변경합니다. */
+  overflow: auto;
+}
+
+
 
 address {
   margin-bottom: 1rem;
@@ -2927,6 +2936,7 @@ textarea.form-control-lg {
   --bs-btn-disabled-bg: #ffc107;
   --bs-btn-disabled-border-color: #ffc107;
 }
+
 
 .btn-danger {
   --bs-btn-color: #fff;
