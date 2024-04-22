@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+     <!-- flash 오류 -->
+     {% for message in get_flashed_messages() %}
+     <div class="alert alert-danger" role="alert">
+         {{ message }}
+     </div>
+     {% endfor %}
+     <div class="d-flex align-items-center mb-3">
+        <!-- 이미지 -->
+        <img src="/static/image/{{product.image}}" alt="..." />
+        <!-- 내용 -->
+        <div class="card ml-3 flex-grow-1">
+            <div class="card-body">
+                <div class="card-text" style="white-space: pre-line;">{{ product.name }}</div>
+                <p>{{ product.price }}원</p>
+                <div class="text-start">
+                    <div class="badge bg-light text-dark" style="white-space: pre-line;">
+                        {{ product.description }}
+                    </div>
+                </div>
+            </div>
+            <form action="{{ url_for('product.add_to_cart') }}" method="post">
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <input type="hidden" name="price" value="{{ product.price }}">
+                <div class="row">
+                    <div class="col">
+                        <input type="number" name="quantity" value="1" min="1" class="form-control w-100"
+                            style="overflow: hidden;" onmouseover="this.style.overflow = 'auto';"
+                            onmouseout="this.style.overflow = 'hidden';">
+                    </div>
+                    <div class="col">
+                        {%if g.user.id==1%}
+                    <a href="{{ url_for('product.modify', product_id=product.id) }}"
+            class="btn btn-sm btn-outline-secondary">수정</a>
+            <a href="javascript:void(0)" class="delete btn btn-sm btn-outline-secondary"
+               data-uri="{{ url_for('product.delete', product_id=product.id) }}">삭제</a>
+                    {% elif g.user%}
+                    <button type="submit" class="btn btn-outline-dark mt-auto">장바구니 담기</button>
+                    {%endif%}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type='text/javascript'>
+const delete_elements = document.getElementsByClassName("delete");
+Array.from(delete_elements).forEach(function(element) {
+    element.addEventListener('click', function() {
+        if(confirm("정말로 삭제하시겠습니까?")) {
+            location.href = this.dataset.uri;
+        };
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>장바구니</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .total-price {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>장바구니</h1>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>상품</th>
+                    <th>가격</th>
+                    <th>수량</th>
+                    <th>합계</th>
+                    <th>삭제</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cart_item in cart_items if cart_item.user_id == user_id%}
+                <tr>
+                    <td>{{ cart_item.product.name }}</td>
+                    <td>{{ cart_item.price }}원</td>
+                    <td>
+                        <!-- JavaScript를 사용하여 수량 조절 -->
+                        <input type="number" name="quantity" value="{{ cart_item.quantity }}" min="1" class="form-control quantity-input" data-price="{{ cart_item.price }}" data-product-id="{{ cart_item.product.id }}">
+                    </td>
+                    <td class="total-price">{{ cart_item.price * cart_item.quantity }}원</td>
+                    <td>
+                        <form action="remove_item/{{ cart_item.id }}" method="post">
+                            <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- 음료 총 합계 출력 -->
+        <div class="row">
+            <div class="col-md-4 offset-md-8">
+                <strong>총 합계: <span id="total-price">{{ total_price }}원</span></strong>
+            </div>
+        </div>
+
+        <form action="/order/create_order" method="post">
+            <button type="submit" class="btn btn-primary mt-3" id="order-button" {% if not cart_items or total_price == 0 %}disabled{% endif %}>주문하기</button>
+        </form>
+        <div class="row mt-3">
+            <div class="col-md-2 mx-auto">
+                <a href="{{ url_for('product._list') }}" class="btn btn-info btn-block">더 담으러가기</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 및 jQuery 스크립트 로드 -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script>
+        // 장바구니 아이템 목록
+        const cartItems = {};
+        
+        // 페이지 로드 시 기존 장바구니 아이템들을 가져와서 cartItems 객체에 저장
+        document.addEventListener('DOMContentLoaded', function() {
+            const quantityInputs = document.querySelectorAll('.quantity-input');
+            quantityInputs.forEach(input => {
+                const productId = input.getAttribute('data-product-id');
+                cartItems[productId] = parseInt(input.value);
+            });
+
+            // 페이지 로드 시 총합계 업데이트
+            updateTotalPrice();
+            // 페이지 로드 시 주문 버튼 초기 상태 설정
+            updateOrderButton();
+        });
+
+        // 수량 입력 필드의 변경 이벤트 처리
+        const quantityInputs = document.querySelectorAll('.quantity-input');
+        quantityInputs.forEach(input => {
+            input.addEventListener('change', function () {
+                const quantity = parseInt(input.value);
+                const price = parseInt(input.getAttribute('data-price'));
+                const productId = input.getAttribute('data-product-id');
+                const newTotalPrice = quantity * price;
+                input.closest('tr').querySelector('.total-price').textContent = newTotalPrice + '원';
+
+                // 장바구니 아이템 업데이트
+                if (!cartItems[productId]) {
+                    cartItems[productId] = quantity;
+                } else {
+                    // 이미 동일한 음료가 장바구니에 있는 경우 수량만 업데이트
+                    cartItems[productId] = quantity;
+                }
+
+                // 전체 총 합계 업데이트
+                updateTotalPrice();
+                // 주문 버튼 활성화/비활성화
+                updateOrderButton();
+            });
+        });
+
+        // 전체 총 합계 업데이트 함수
+        function updateTotalPrice() {
+            const totalPrices = document.querySelectorAll('.total-price');
+            let totalPriceSum = 0;
+            totalPrices.forEach(price => {
+                totalPriceSum += parseInt(price.textContent);
+            });
+            document.getElementById('total-price').textContent = totalPriceSum + '원';
+        }
+
+        // 주문 버튼 업데이트 함수
+        function updateOrderButton() {
+            let totalQuantity = 0; // 장바구니 전체 수량
+            for (const productId in cartItems) {
+                totalQuantity += cartItems[productId];
+            }
+
+            const orderButton = document.getElementById('order-button');
+            const totalPrice = parseInt(document.getElementById('total-price').textContent);
+
+            if (totalQuantity > 0 && totalPrice > 0) {
+                orderButton.removeAttribute('disabled');
+            } else {
+                orderButton.setAttribute('disabled', 'disabled');
+            }
+        }
+    </script>
+</body>
+</html>
+{% endblock %}
