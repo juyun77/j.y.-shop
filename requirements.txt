@@ -1,0 +1,5 @@
+flask
+Flask-Migrate
+Flask-SQLAlchemy
+PyMySQL
+markup
