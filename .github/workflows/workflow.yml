@@ -75,7 +75,7 @@ jobs:
           token: ${{ env.GIT_ACCESS_TOKEN }}
           commit-message: 'deploy: jyshop-${{ env.HASH }}'
           base: main
-          branch: game2048-${{ env.HASH }}
+          branch: jyshop-${{ env.HASH }}
           title: 'deploy: jyshop-${{ env.HASH }}'
           labels: |
             automerge
