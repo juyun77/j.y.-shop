@@ -3,3 +3,4 @@ Flask-Migrate
 Flask-SQLAlchemy
 PyMySQL
 markup
+flask_wtf

@@ -57,4 +57,64 @@ VALUES
 
 
 
+-- Product 테이블 생성
+CREATE TABLE `product` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `image` VARCHAR(200) NOT NULL,
+  `name` VARCHAR(200) NOT NULL,
+  `price` VARCHAR(200) NOT NULL,
+  `description` TEXT NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- User 테이블 생성
+CREATE TABLE `user` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(150) NOT NULL,
+  `password` VARCHAR(200) NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
+  `address` VARCHAR(200) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username_unique` (`username`)
+);
+
+-- CartItem 테이블 생성
+CREATE TABLE `cart_item` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `product_id` INT,
+  `price` INT NOT NULL,
+  `quantity` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user`(`id`),
+  FOREIGN KEY (`product_id`) REFERENCES `product`(`id`)
+);
+
+-- Order 테이블 생성
+CREATE TABLE `order` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `order_date` DATETIME NOT NULL,
+  `total_price` INT NOT NULL,
+  `status` VARCHAR(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user`(`id`)
+);
+
+-- OrderedItem 테이블 생성
+CREATE TABLE `ordered_item` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `order_id` INT NOT NULL,
+  `product_id` INT,
+  `price` INT NOT NULL,
+  `quantity` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`order_id`) REFERENCES `order`(`id`),
+  FOREIGN KEY (`product_id`) REFERENCES `product`(`id`)
+);
+
+
+
+
+
 pip install markup

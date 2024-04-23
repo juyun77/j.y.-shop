@@ -1,5 +1,5 @@
 # Python 베이스 이미지를 사용합니다.
-FROM python:3.9-slim
+FROM python:3.8-slim
 
 # 작업 디렉토리를 설정합니다.
 WORKDIR /app
